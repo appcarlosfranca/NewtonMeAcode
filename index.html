@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#10162b">
-<title>Newton, me acode! — V10.2 | Responsivo</title>
+<title>Newton, me acode! — V10.3 | ENADE</title>
 <style>
 :root{
   --bg:#080b18;--panel:#11172d;--panel2:#171f3c;--text:#f5f7ff;--muted:#aeb8d6;
@@ -396,6 +396,27 @@ textarea{
   }
 }
 
+
+/* V10.3 — Gerador ENADE */
+.enade-q{padding:clamp(18px,2.4vw,28px);border-left:3px solid var(--accent2)}
+.enade-q-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.enade-q-number{font-weight:950;letter-spacing:.05em;color:var(--accent2)}
+.enade-stimulus{padding:14px 16px;border:1px solid var(--border);border-radius:15px;background:rgba(255,255,255,.025);color:color-mix(in srgb,var(--text) 90%,var(--muted));line-height:1.65;margin:13px 0}
+.enade-command{font-size:1.04rem;line-height:1.65;font-weight:720;margin:15px 0}
+.enade-options{display:grid;gap:9px}
+.enade-option{display:flex;gap:11px;align-items:flex-start;text-align:left;width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.025);color:var(--text);transition:.18s}
+.enade-option:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.enade-option.selected{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.enade-option.correct{border-color:var(--good);background:color-mix(in srgb,var(--good) 13%,transparent)}
+.enade-option.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 11%,transparent)}
+.enade-answer{display:none;margin-top:14px;padding:16px;border-radius:16px;border:1px solid color-mix(in srgb,var(--good) 35%,var(--border));background:color-mix(in srgb,var(--good) 6%,var(--panel));line-height:1.6}
+.enade-answer.open{display:block}
+.enade-answer h4{margin:0 0 8px}
+.enade-analysis{margin-top:10px;color:var(--muted)}
+.enade-footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.enade-footer-actions .btn{flex:1 1 220px}
+.enade-source-note{font-size:.78rem;color:var(--muted);margin-top:12px}
+
 </style>
 </head>
 <body data-theme="quantum">
@@ -419,6 +440,7 @@ textarea{
       <button data-view="home" class="active">Início</button>
       <button data-view="matrix">Física Teórica</button>
       <button data-view="setup">Simulados</button>
+      <button data-view="enade">Gerador ENADE</button>
       <button data-view="errors">Caderno de erros</button>
       <button data-view="favorites">Favoritos</button>
       <button data-view="stats">Estatísticas</button>
@@ -493,6 +515,82 @@ textarea{
     <div class="mode-hint" id="modeHint"></div>
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" id="startQuiz">Iniciar simulado</button><span class="tag" id="availableTag"></span></div>
   </article>
+</section>
+
+
+<section id="view-enade" class="view">
+  <div class="section-head">
+    <div>
+      <span class="kicker">Treino ENADE · Física Licenciatura</span>
+      <h2>Gerador de questões inéditas no padrão ENADE</h2>
+      <p>Questões paramétricas inspiradas na arquitetura cognitiva e editorial observada nas provas oficiais enviadas, sem copiar os itens originais.</p>
+    </div>
+    <span class="tag version-pill">V10.3 · Gerador local</span>
+  </div>
+
+  <div class="grid2">
+    <article class="card pad">
+      <h3>Configurar geração</h3>
+      <div class="grid2">
+        <div class="field">
+          <label>Modelo de prova</label>
+          <select id="enadeModel">
+            <option value="2025" selected>ENADE Licenciaturas 2025 — 4 alternativas (A–D)</option>
+            <option value="2021">ENADE Licenciatura 2021 — 5 alternativas (A–E)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Nível de dificuldade</label>
+          <select id="enadeDifficulty">
+            <option value="mix" selected>Misturar níveis ENADE</option>
+            <option value="Intermediária">Médio / Intermediário</option>
+            <option value="Avançada">Difícil / Avançado</option>
+            <option value="Desafio">Muito difícil / Desafio</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Eixo</label>
+          <select id="enadeAxis">
+            <option value="mix" selected>Misto — Física + formação docente</option>
+            <option value="physics">Componente físico-conceitual</option>
+            <option value="teaching">Ensino de Física / formação docente</option>
+            <option value="experimental">Experimental / análise de dados</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantidade</label>
+          <select id="enadeCount">
+            <option value="1">1 questão</option>
+            <option value="3">3 questões</option>
+            <option value="5" selected>5 questões</option>
+            <option value="10">10 questões</option>
+          </select>
+        </div>
+      </div>
+      <div class="compact-actions" style="margin-top:16px">
+        <button class="btn primary" id="generateEnade">Gerar questões inéditas</button>
+        <button class="btn" id="clearEnade">Limpar</button>
+      </div>
+      <div class="mode-hint">
+        O gabarito fica oculto durante a resolução. Marque uma alternativa e use <strong>“Revelar gabarito e resolução”</strong> somente quando quiser conferir. 
+        A dificuldade é calibrada por demanda cognitiva, extensão do contexto, número de etapas e integração entre conteúdo e ensino; não representa parâmetro psicométrico oficial do INEP.
+      </div>
+    </article>
+
+    <article class="card pad">
+      <h3>Perfil reproduzido</h3>
+      <div class="list">
+        <div class="note-card"><strong>Contextualização</strong><p style="color:var(--muted)">Situações reais, escolares, experimentais, sociais ou tecnológicas antes do comando.</p></div>
+        <div class="note-card"><strong>Raciocínio integrado</strong><p style="color:var(--muted)">Interpretação de dados, conceitos físicos, modelagem, avaliação de afirmações e tomada de decisão pedagógica.</p></div>
+        <div class="note-card"><strong>Distratores plausíveis</strong><p style="color:var(--muted)">Alternativas construídas a partir de erros conceituais, matemáticos ou didáticos recorrentes.</p></div>
+        <div class="note-card"><strong>Licenciatura</strong><p style="color:var(--muted)">Integra Física, experimentação, CTS, metodologias de ensino, inclusão e análise crítica da prática docente.</p></div>
+      </div>
+    </article>
+  </div>
+
+  <div id="enadeGenerated" class="list" style="margin-top:18px">
+    <div class="empty card">Configure os filtros e clique em “Gerar questões inéditas”.</div>
+  </div>
 </section>
 
 <section id="view-quiz" class="view">
@@ -9190,6 +9288,372 @@ const ACHIEVEMENTS=[
 {id:"errorless",icon:"◇",title:"Órbita estável",desc:"Conclua uma sessão com 100% de acertos.",check:s=>s.perfectSessions>=1}
 ];
 
+
+/* =========================
+   GERADOR ENADE — V10.3
+   Questões paramétricas, inéditas e locais.
+   ========================= */
+const ENADE_PROFILE = {
+  basis:"Provas oficiais fornecidas pelo usuário: Licenciatura 2021 e 2025; Bacharelado 2014 e 2017 como referência complementar de rigor conceitual.",
+  models:{
+    "2025":{options:4,label:"ENADE Licenciaturas 2025"},
+    "2021":{options:5,label:"ENADE Licenciatura 2021"}
+  }
+};
+
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const roundN=(x,n=1)=>Number(x.toFixed(n));
+const enadeShuffleQuestion=q=>{
+  const idx=[...q.options.keys()];
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}
+  return {...q,options:idx.map(i=>q.options[i]),answer:idx.indexOf(q.answer),optionNotes:idx.map(i=>q.optionNotes?.[i]||"")};
+};
+function enadeTrimOptions(q,model){
+  const n=ENADE_PROFILE.models[model]?.options||4;
+  if(q.options.length===n)return q;
+  if(n===4 && q.options.length===5){
+    const wrong=q.options.map((_,i)=>i).filter(i=>i!==q.answer);
+    const drop=pick(wrong);
+    const keep=q.options.map((_,i)=>i).filter(i=>i!==drop);
+    return {...q,options:keep.map(i=>q.options[i]),optionNotes:keep.map(i=>q.optionNotes?.[i]||""),answer:keep.indexOf(q.answer)};
+  }
+  if(n===5 && q.options.length===4){
+    return {...q,options:[...q.options,"Os dados fornecidos são insuficientes para qualquer conclusão física ou pedagógica."],
+      optionNotes:[...(q.optionNotes||[]),"Distrator absoluto: os dados foram construídos para permitir uma conclusão." ]};
+  }
+  return q;
+}
+function enadeBase(meta){
+  return {id:`ENADE-GEN-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,generated:true,time:meta.time||220,...meta};
+}
+
+function genMechanics(){
+  const m=pick([2,4,5,8]), h=pick([1.5,2,2.5,3]), mu=pick([0.10,0.15,0.20,0.25]), d=pick([2,3,4]), g=10;
+  const K=Math.max(0,m*g*h-mu*m*g*d), v=Math.sqrt(2*K/m);
+  const correct=`A velocidade ao final é aproximadamente ${roundN(v,1)} m/s, pois a perda por atrito deve ser subtraída da energia potencial inicial.`;
+  return enadeBase({
+    axis:"physics",difficulty:"Avançada",discipline:"Física A",topic:"Trabalho e energia",subtopic:"Modelagem com dissipação",
+    stimulus:`Em uma atividade de laboratório, um bloco de ${m} kg parte do repouso de uma altura de ${h.toFixed(1).replace(".",",")} m e, após descer uma pista ideal, percorre ${d} m em uma região horizontal rugosa com coeficiente de atrito cinético ${mu.toFixed(2).replace(".",",")}. Considere g = 10 m/s² e despreze outras perdas.`,
+    prompt:"Ao analisar os dados para discutir conservação e dissipação de energia com uma turma de Licenciatura em Física, qual conclusão é fisicamente consistente?",
+    options:[
+      correct,
+      `A velocidade é ${roundN(Math.sqrt(2*g*h),1)} m/s, pois o atrito não modifica a energia mecânica total do bloco.`,
+      `A energia cinética final é μmgd, pois todo o trabalho do atrito é convertido em movimento translacional.`,
+      `O bloco necessariamente para antes do trecho rugoso, porque forças dissipativas impedem a aplicação do teorema trabalho–energia.`,
+      `A massa deve ser conhecida apenas para calcular a velocidade final; sem ela, a conservação de energia não pode ser usada.`
+    ],answer:0,
+    rationale:`A energia disponível no início é mgh. No trecho rugoso, o trabalho do atrito é −μmgd. Assim, K_f=mgh−μmgd e v=√(2K_f/m)≈${roundN(v,1)} m/s. A situação também é adequada para mostrar que o teorema trabalho–energia continua válido em sistemas dissipativos.`,
+    optionNotes:["Correta.","Ignora a dissipação por atrito.","Inverte o papel energético do atrito.","Dissipação não invalida o teorema trabalho–energia.","A massa cancela na expressão final para v neste modelo."],
+    formula:"K_f = mgh − μmgd; v = √(2K_f/m)."
+  });
+}
+
+function genThermo(){
+  const mh=pick([100,150,200]), mc=pick([200,250,300]), Th=pick([70,80,90]), Tc=pick([10,20,25]);
+  const Tf=(mh*Th+mc*Tc)/(mh+mc);
+  return enadeBase({
+    axis:"experimental",difficulty:"Intermediária",discipline:"Física B",topic:"Calorimetria",subtopic:"Balanço térmico e interpretação experimental",
+    stimulus:`Em uma prática de calorimetria, ${mh} g de água a ${Th} °C são misturados a ${mc} g de água a ${Tc} °C em um recipiente cuja capacidade térmica pode ser desprezada. A turma registra a temperatura até o sistema atingir equilíbrio.`,
+    prompt:"Considerando o modelo ideal e a finalidade didática do experimento, assinale a alternativa correta.",
+    options:[
+      `A temperatura de equilíbrio é aproximadamente ${roundN(Tf,1).toString().replace(".",",")} °C, obtida pela conservação de energia entre as porções de água.`,
+      `A temperatura final é ${(Th+Tc)/2} °C, pois a lei zero da Termodinâmica exige a média aritmética das temperaturas.`,
+      `A porção de maior temperatura cede calor até atingir 0 °C, e só então a porção fria começa a aquecer.`,
+      `A massa de cada porção é irrelevante, pois o calor específico da água é o mesmo nos dois recipientes.`,
+      `O experimento não pode ser interpretado por conservação de energia porque há transferência de calor.`
+    ],answer:0,
+    rationale:`Como é a mesma substância e o recipiente é ideal, mh·c(Th−Tf)=mc·c(Tf−Tc). O calor específico cancela, mas as massas não. O resultado é Tf≈${roundN(Tf,1)} °C.`,
+    optionNotes:["Correta.","A média simples só vale para massas e capacidades térmicas iguais.","O equilíbrio é contínuo; não há etapa obrigatória em 0 °C.","As massas ponderam o balanço energético.","Transferência de calor é justamente o mecanismo contabilizado no balanço."],
+    formula:"m₁c(T₁−T_f)=m₂c(T_f−T₂)."
+  });
+}
+
+function genString(){
+  const L=pick([0.8,1.0,1.2]), mu=pick([0.004,0.006,0.010]), F=pick([16,25,36,49,64]);
+  const f=(1/(2*L))*Math.sqrt(F/mu);
+  return enadeBase({
+    axis:"experimental",difficulty:"Avançada",discipline:"Física B",topic:"Ondas",subtopic:"Modos normais em cordas",
+    stimulus:`Em uma investigação didática, uma corda de comprimento vibrante L = ${L.toFixed(1).replace(".",",")} m e densidade linear μ = ${mu.toFixed(3).replace(".",",")} kg/m é submetida a uma tensão F = ${F} N. O professor excita o modo fundamental e solicita que os estudantes comparem a previsão teórica com a frequência medida.`,
+    prompt:"Qual frequência teórica deve ser usada como referência e qual interpretação metodológica é adequada?",
+    options:[
+      `f ≈ ${roundN(f,1).toString().replace(".",",")} Hz; diferenças pequenas entre medida e modelo devem ser discutidas à luz de incertezas e idealizações.`,
+      `f ≈ ${roundN(Math.sqrt(F/mu),1).toString().replace(".",",")} Hz; qualquer diferença experimental comprova que o modelo é falso.`,
+      `f ≈ ${roundN((1/L)*Math.sqrt(F/mu),1).toString().replace(".",",")} Hz; a repetição de medidas é desnecessária quando há equação teórica.`,
+      `f ≈ ${roundN((1/(2*L))*Math.sqrt(mu/F),3).toString().replace(".",",")} Hz; a incerteza pode ser eliminada ajustando o resultado experimental ao valor previsto.`,
+      `Não é possível prever f, pois a tensão e a densidade linear não influenciam a propagação de ondas em cordas.`
+    ],answer:0,
+    rationale:`Para o modo fundamental, f=(1/2L)√(F/μ), resultando em aproximadamente ${roundN(f,1)} Hz. Em contexto experimental, discrepâncias devem ser analisadas considerando incertezas de medida e limitações do modelo, e não “corrigidas” artificialmente.`,
+    optionNotes:["Correta.","Falta o fator geométrico 1/(2L) e a interpretação de falsificação é simplista.","Usa relação do segundo harmônico e despreza repetição.","Inverte F/μ e propõe tratamento inadequado de incerteza.","Contraria o modelo de propagação em cordas."],
+    formula:"f₁=(1/2L)√(F/μ)."
+  });
+}
+
+function genElectricityTeaching(){
+  const P=pick([800,1000,1200,1500]), hours=pick([0.5,1,1.5,2]), days=30, tariff=pick([0.75,0.90,1.00,1.10]);
+  const cost=(P/1000)*hours*days*tariff;
+  return enadeBase({
+    axis:"teaching",difficulty:"Intermediária",discipline:"Física C",topic:"Energia elétrica",subtopic:"Consumo residencial e letramento científico",
+    stimulus:`Em uma turma de Ensino Médio, o professor parte da conta de energia das famílias para discutir potência e consumo. Um equipamento de ${P} W é usado, em média, ${hours.toString().replace(".",",")} h por dia durante ${days} dias. Considere tarifa de R$ ${tariff.toFixed(2).replace(".",",")} por kWh.`,
+    prompt:"Qual proposta articula corretamente o cálculo físico e uma abordagem formativa compatível com o padrão de questões de Licenciatura?",
+    options:[
+      `Calcular um custo aproximado de R$ ${cost.toFixed(2).replace(".",",")} e discutir como hábitos de uso, eficiência dos aparelhos e condições socioeconômicas interferem no consumo.`,
+      `Calcular ${roundN(P*hours*days,1)} kWh e limitar a atividade à memorização da expressão P=E/t.`,
+      `Concluir que a potência nominal determina sozinha o valor da conta, independentemente do tempo de uso e da tarifa.`,
+      `Evitar dados reais de consumo, pois contextualização social reduz a objetividade dos conceitos físicos.`,
+      `Substituir o cálculo por uma pesquisa de opinião, já que questões de energia residencial não permitem modelagem quantitativa.`
+    ],answer:0,
+    rationale:`O consumo é E=(P/1000)·t, em kWh. Multiplicando pela tarifa, o custo é aproximadamente R$ ${cost.toFixed(2)}. A atividade ganha caráter formativo quando o cálculo é articulado à análise crítica do uso de energia, e não reduzido à aplicação mecânica de fórmula.`,
+    optionNotes:["Correta.","Não converte W para kW e reduz a atividade à memorização.","Ignora tempo e tarifa.","Contextualização pode fortalecer a aprendizagem conceitual e crítica.","A situação admite modelagem quantitativa direta."],
+    formula:"E(kWh)=P(kW)·t(h); custo=E·tarifa."
+  });
+}
+
+function genCTS(){
+  const context=pick(["alagamentos recorrentes no entorno da escola","interrupções de energia em uma comunidade rural","ilhas de calor no bairro da escola","alto consumo de eletricidade no prédio escolar"]);
+  return enadeBase({
+    axis:"teaching",difficulty:"Avançada",discipline:"Ensino de Física",topic:"CTS",subtopic:"Problematização e intervenção",
+    stimulus:`Uma professora de Física identifica ${context}. Ela pretende trabalhar conceitos físicos vinculados ao problema e desenvolver uma sequência didática em perspectiva Ciência–Tecnologia–Sociedade (CTS).`,
+    prompt:"Qual ação pedagógica melhor caracteriza essa perspectiva?",
+    options:[
+      "Levantar dados do problema com os estudantes, mobilizar conceitos físicos para interpretá-los, analisar soluções tecnológicas e seus impactos e elaborar uma proposta de intervenção argumentada.",
+      "Apresentar primeiro todas as equações do conteúdo e, ao final, mencionar o problema local apenas como exemplo ilustrativo sem retomá-lo.",
+      "Solicitar uma pesquisa livre sobre o tema e avaliar exclusivamente a quantidade de informações reunidas, sem explicitar relações com conceitos físicos.",
+      "Substituir a discussão científica por um debate de opiniões, evitando modelagem quantitativa para não direcionar as conclusões dos estudantes.",
+      "Utilizar apenas um simulador computacional, pois recursos digitais são suficientes para caracterizar uma abordagem CTS."
+    ],answer:0,
+    rationale:"Uma abordagem CTS articula conhecimento científico, tecnologia, contexto social, tomada de decisão e implicações coletivas. A problematização não é mero cenário decorativo: organiza a investigação e retorna como objeto de análise e intervenção.",
+    optionNotes:["Correta.","Usa o contexto como adorno, sem integração real.","Pesquisa sem articulação conceitual não garante abordagem CTS.","CTS não dispensa evidência nem modelagem.","Tecnologia digital, isoladamente, não define CTS."],
+    formula:"Problema social ↔ conceitos científicos ↔ tecnologia ↔ impactos ↔ decisão/intervenção."
+  });
+}
+
+function genFreire(){
+  const issue=pick(["falhas prolongadas no fornecimento de energia elétrica","dificuldade de acesso à água potável","risco de deslizamentos após chuvas intensas","poluição sonora próxima à escola"]);
+  return enadeBase({
+    axis:"teaching",difficulty:"Avançada",discipline:"Ensino de Física",topic:"Pedagogia freireana",subtopic:"Tema gerador",
+    stimulus:`Em uma comunidade, estudantes relatam ${issue}. Um professor pretende transformar essa realidade vivida em tema gerador para uma unidade de Física.`,
+    prompt:"Qual encaminhamento é mais coerente com uma perspectiva freireana?",
+    options:[
+      "Partir das falas e condições concretas da comunidade, problematizar suas causas, introduzir os conceitos físicos necessários à compreensão e construir com os estudantes possibilidades de ação.",
+      "Definir previamente todo o conteúdo e usar a realidade da comunidade apenas para motivar os primeiros cinco minutos da aula.",
+      "Solicitar aos estudantes que memorizem conceitos antes de discutir qualquer situação concreta, evitando que conhecimentos cotidianos interfiram no conteúdo científico.",
+      "Restringir a atividade a uma campanha informativa preparada pelo professor, sem investigação dos estudantes, para garantir uniformidade das respostas.",
+      "Trabalhar somente conhecimentos locais, sem dialogar com conceitos científicos, pois a introdução da Física formal descaracteriza a problematização."
+    ],answer:0,
+    rationale:"Na perspectiva freireana, a realidade vivida é objeto de leitura crítica; saberes prévios e conhecimento científico entram em diálogo para ampliar a compreensão e subsidiar práxis transformadora.",
+    optionNotes:["Correta.","Reduz o contexto a motivação superficial.","Desconsidera o diálogo com saberes dos estudantes.","Centraliza a ação e reduz protagonismo investigativo.","O diálogo não implica abandonar conhecimento científico."],
+    formula:"Realidade vivida → problematização → conhecimento → releitura crítica → ação."
+  });
+}
+
+function genPhotoelectric(){
+  const phi=pick([2.0,2.2,2.5,3.0]), f=pick([6,7,8,9])*1e14, h=4.14e-15;
+  const K=Math.max(0,h*f-phi);
+  return enadeBase({
+    axis:"physics",difficulty:"Desafio",discipline:"Física Moderna I",topic:"Efeito fotoelétrico",subtopic:"Função trabalho e interpretação",
+    stimulus:`Em um simulador de efeito fotoelétrico, um metal de função trabalho φ = ${phi.toFixed(1).replace(".",",")} eV é iluminado por radiação de frequência ${String(f/1e14).replace(".",",")}×10¹⁴ Hz. Adote h = 4,14×10⁻¹⁵ eV·s.`,
+    prompt:"Com base no modelo de Einstein para o efeito fotoelétrico, qual conclusão é correta?",
+    options:[
+      K>0?`Há emissão de fotoelétrons, com energia cinética máxima aproximada de ${roundN(K,2).toString().replace(".",",")} eV.`:"Não há emissão fotoelétrica, pois hf é menor que a função trabalho do metal.",
+      K>0?"Aumentar apenas a intensidade da luz, mantendo a frequência, aumenta obrigatoriamente a energia cinética máxima de cada fotoelétron.":"Aumentar a intensidade da luz sempre produz emissão, mesmo que a frequência permaneça abaixo da frequência de corte.",
+      "A energia dos fótons depende da intensidade luminosa e não da frequência.",
+      "O potencial de corte é determinado apenas pela quantidade de elétrons emitidos, independentemente da energia de cada fóton.",
+      "O efeito fotoelétrico pode ser explicado integralmente por uma onda clássica que distribui energia continuamente entre os elétrons."
+    ],answer:0,
+    rationale:`A energia do fóton é hf=${roundN(h*f,2)} eV. A condição de emissão é hf≥φ e, quando satisfeita, K_max=hf−φ≈${roundN(K,2)} eV. Intensidade altera principalmente o número de fótons incidentes, não K_max quando a frequência é mantida.`,
+    optionNotes:["Correta.","Confunde intensidade com energia do fóton.","E=hf.","O potencial de corte se relaciona a Kmax/e.","A explicação clássica não reproduz frequência de corte e dependência energética observada."],
+    formula:"K_max = hf − φ."
+  });
+}
+
+function genRelativity(){
+  const beta=pick([0.5,0.6,0.8]), gamma=1/Math.sqrt(1-beta*beta);
+  return enadeBase({
+    axis:"physics",difficulty:"Desafio",discipline:"Física Moderna I",topic:"Relatividade especial",subtopic:"Dilatação temporal e sinais",
+    stimulus:`Considere, em um modelo simplificado, um satélite movendo-se com velocidade v = ${beta.toFixed(1).replace(".",",")}c em relação a um observador terrestre, desprezando efeitos gravitacionais. O satélite emite pulsos de referência de um relógio ideal.`,
+    prompt:"Avalie as afirmações: I. O intervalo próprio é medido no referencial em que os dois eventos ocorrem na mesma posição. II. Para o observador terrestre, o relógio do satélite é observado com dilatação temporal por um fator γ. III. O sinal luminoso emitido pelo satélite chega ao observador com velocidade c+v. É correto o que se afirma em",
+    options:[
+      "I e II, apenas.",
+      "II e III, apenas.",
+      "I e III, apenas.",
+      "I, II e III.",
+      "II, apenas."
+    ],answer:0,
+    rationale:`I é verdadeira. II é verdadeira, com γ=1/√(1−β²)≈${roundN(gamma,2)}. III é falsa: a velocidade da luz no vácuo é c para observadores inerciais, independentemente do movimento da fonte.`,
+    optionNotes:["Correta.","III é falsa.","III é falsa.","III é falsa.","I também é verdadeira."],
+    formula:"Δt=γΔτ; γ=1/√(1−v²/c²); c é invariante."
+  });
+}
+
+function genUncertainty(){
+  const vals=pick([
+    [12.41,12.43,12.40,12.42],
+    [8.14,8.18,8.16,8.15],
+    [5.02,5.00,5.04,5.01]
+  ]);
+  const mean=vals.reduce((a,b)=>a+b,0)/vals.length, half=(Math.max(...vals)-Math.min(...vals))/2;
+  return enadeBase({
+    axis:"experimental",difficulty:"Avançada",discipline:"Introdução à Física",topic:"Incertezas",subtopic:"Tratamento e comunicação de dados",
+    stimulus:`Em uma prática, quatro medidas de uma mesma grandeza foram ${vals.map(v=>v.toFixed(2).replace(".",",")).join("; ")} unidades. O grupo deseja apresentar um resultado com uma estimativa simples de incerteza baseada na semiamplitude do conjunto.`,
+    prompt:"Qual procedimento é metodologicamente mais adequado?",
+    options:[
+      `Usar a média (${mean.toFixed(3).replace(".",",")}) como estimativa central e a semiamplitude (${half.toFixed(3).replace(".",",")}) como base para a incerteza, arredondando ambos de forma coerente.`,
+      "Escolher a maior medida como valor verdadeiro, pois ela incorpora todas as demais por excesso.",
+      "Somar todas as medidas e usar o total como resultado, evitando perda de algarismos significativos.",
+      "Eliminar as medidas extremas sem justificativa e declarar incerteza nula para as duas medidas restantes.",
+      "Ajustar cada leitura até que todas coincidam com a média, pois discrepâncias experimentais devem ser removidas."
+    ],answer:0,
+    rationale:"A média é uma estimativa central e a dispersão observada fornece informação sobre repetibilidade. A incerteza deve ser comunicada com arredondamento coerente; discrepâncias não devem ser apagadas ou ajustadas artificialmente.",
+    optionNotes:["Correta.","Máximo não é estimativa do valor verdadeiro.","Soma não representa a grandeza medida.","Remoção sem critério é viés.","Dados experimentais não devem ser alterados para concordar."],
+    formula:"x̄=Σxᵢ/n; Δx≈(x_max−x_min)/2."
+  });
+}
+
+function genInduction(){
+  const N=pick([100,200,300]), dPhi=pick([0.004,0.006,0.010]), dt=pick([0.10,0.20,0.25]);
+  const emf=N*dPhi/dt;
+  return enadeBase({
+    axis:"experimental",difficulty:"Avançada",discipline:"Física D",topic:"Indução eletromagnética",subtopic:"Lei de Faraday e investigação",
+    stimulus:`Uma bobina de ${N} espiras é submetida a uma variação de fluxo magnético de ${dPhi.toFixed(3).replace(".",",")} Wb por espira durante ${dt.toFixed(2).replace(".",",")} s. Em seguida, o professor inverte o sentido da variação do fluxo e repete o procedimento.`,
+    prompt:"Qual resultado e qual exploração didática são consistentes com a lei de Faraday–Lenz?",
+    options:[
+      `O módulo médio da fem é ${roundN(emf,1).toString().replace(".",",")} V; a inversão da variação do fluxo inverte a polaridade induzida, permitindo discutir a oposição à variação que a produz.`,
+      `O módulo da fem é ${roundN(dPhi/dt,2).toString().replace(".",",")} V e não depende do número de espiras.`,
+      "A inversão do fluxo mantém necessariamente a mesma polaridade, pois a lei de Lenz afeta apenas o módulo da fem.",
+      "A fem induzida só existe se o campo magnético for constante no tempo e uniforme no espaço.",
+      "A experiência demonstra conservação de carga, mas não permite discutir conservação de energia."
+    ],answer:0,
+    rationale:`|ε|=N|ΔΦ/Δt|=${roundN(emf,1)} V. O sinal negativo de Faraday–Lenz representa o sentido da fem induzida em oposição à variação do fluxo, conectando o fenômeno à conservação de energia.`,
+    optionNotes:["Correta.","Ignora N.","O sinal muda com o sentido de ΔΦ.","É necessária variação de fluxo, não constância.","A lei de Lenz está intimamente relacionada à conservação de energia."],
+    formula:"ε=−NΔΦ/Δt."
+  });
+}
+
+function genOptics(){
+  const n1=1.00, n2=pick([1.33,1.40,1.50]), angle=pick([30,40,50]);
+  const theta2=Math.asin(n1*Math.sin(angle*Math.PI/180)/n2)*180/Math.PI;
+  return enadeBase({
+    axis:"physics",difficulty:"Intermediária",discipline:"Física D",topic:"Óptica geométrica",subtopic:"Refração",
+    stimulus:`Um raio luminoso passa do ar (n₁≈1,00) para um meio transparente de índice n₂=${n2.toFixed(2).replace(".",",")}, incidindo com ângulo de ${angle}° em relação à normal.`,
+    prompt:"Qual conclusão é compatível com a lei de Snell e com a interpretação geométrica da refração?",
+    options:[
+      `O raio aproxima-se da normal e o ângulo refratado é aproximadamente ${roundN(theta2,1).toString().replace(".",",")}°.`,
+      "O raio afasta-se da normal porque sua velocidade diminui ao entrar no meio de maior índice.",
+      `O ângulo refratado permanece ${angle}°, pois a frequência da luz não muda na interface.`,
+      "A frequência e a velocidade permanecem constantes; apenas a amplitude pode mudar.",
+      "A refração exige absorção completa da luz incidente seguida de nova emissão em direção aleatória."
+    ],answer:0,
+    rationale:`Pela lei n₁senθ₁=n₂senθ₂. Como n₂>n₁, θ₂<θ₁, portanto o raio se aproxima da normal. A frequência permanece contínua na interface, mas a velocidade e o comprimento de onda mudam.`,
+    optionNotes:["Correta.","Menor velocidade em maior n leva aproximação da normal.","Frequência constante não implica ângulo constante.","A velocidade muda com n.","Refração não é reemissão aleatória."],
+    formula:"n₁senθ₁=n₂senθ₂."
+  });
+}
+
+const ENADE_GENERATORS=[
+  genMechanics,genThermo,genString,genElectricityTeaching,genCTS,genFreire,
+  genPhotoelectric,genRelativity,genUncertainty,genInduction,genOptics
+];
+
+function generateEnadeQuestion(filters={}){
+  let pool=ENADE_GENERATORS.map(fn=>fn()).filter(q=>{
+    const diffOk=filters.difficulty==="mix"||!filters.difficulty||q.difficulty===filters.difficulty;
+    const axisOk=filters.axis==="mix"||!filters.axis||q.axis===filters.axis;
+    return diffOk&&axisOk;
+  });
+  // Regenerate once if a narrow filter produced no candidate because sampled generator metadata is static.
+  if(!pool.length){
+    pool=ENADE_GENERATORS.map(fn=>fn()).filter(q=>(filters.difficulty==="mix"||q.difficulty===filters.difficulty)&&(filters.axis==="mix"||q.axis===filters.axis));
+  }
+  if(!pool.length)return null;
+  let q=pick(pool);
+  q=enadeTrimOptions(q,filters.model||"2025");
+  q=enadeShuffleQuestion(q);
+  q.model=filters.model||"2025";
+  return q;
+}
+
+let enadeCurrent=[];
+function renderEnadeGenerated(){
+  const box=$("#enadeGenerated"); if(!box)return;
+  if(!enadeCurrent.length){box.innerHTML='<div class="empty card">Configure os filtros e clique em “Gerar questões inéditas”.</div>';return}
+  box.innerHTML=enadeCurrent.map((q,idx)=>`
+    <article class="card enade-q" data-enade-id="${q.id}">
+      <div class="enade-q-head">
+        <div>
+          <div class="enade-q-number">QUESTÃO INÉDITA ${String(idx+1).padStart(2,"0")}</div>
+          <div class="qmeta" style="margin-top:7px">
+            <span class="tag">${q.model==="2025"?"Modelo 2025 · A–D":"Modelo 2021 · A–E"}</span>
+            <span class="tag">${q.difficulty}</span>
+            <span class="tag">${q.discipline}</span>
+            <span class="tag">${q.topic}</span>
+          </div>
+        </div>
+        <span class="tag">Gerada localmente</span>
+      </div>
+      <div class="enade-stimulus">${q.stimulus}</div>
+      <div class="enade-command">${q.prompt}</div>
+      <div class="enade-options">
+        ${q.options.map((op,i)=>`<button class="enade-option" type="button" data-enade-option="${i}"><span class="letter">${"ABCDE"[i]}</span><span>${op}</span></button>`).join("")}
+      </div>
+      <div class="enade-footer-actions">
+        <button class="btn primary" type="button" data-enade-reveal>Revelar gabarito e resolução</button>
+        <button class="btn" type="button" data-enade-regenerate>Gerar outra deste nível</button>
+      </div>
+      <div class="enade-answer">
+        <h4>Gabarito: alternativa ${"ABCDE"[q.answer]}</h4>
+        <p>${q.rationale}</p>
+        <p><strong>Ideia/equação central:</strong> ${q.formula}</p>
+        <div class="enade-analysis"><strong>Análise das alternativas</strong><ol type="A">${q.options.map((op,i)=>`<li>${q.optionNotes?.[i]|| (i===q.answer?"Correta.":"Distrator.")}</li>`).join("")}</ol></div>
+      </div>
+      <div class="enade-source-note">Questão inédita: construída por matriz paramétrica inspirada no formato das provas oficiais analisadas; não é item do INEP e não reproduz enunciado oficial.</div>
+    </article>
+  `).join("");
+
+  box.querySelectorAll(".enade-q").forEach(card=>{
+    const id=card.dataset.enadeId, q=enadeCurrent.find(x=>x.id===id);
+    card.querySelectorAll("[data-enade-option]").forEach(btn=>btn.onclick=()=>{
+      if(card.dataset.revealed==="1")return;
+      card.querySelectorAll(".enade-option").forEach(x=>x.classList.remove("selected"));
+      btn.classList.add("selected");
+      card.dataset.selected=btn.dataset.enadeOption;
+    });
+    card.querySelector("[data-enade-reveal]").onclick=()=>{
+      card.dataset.revealed="1";
+      const selected=Number(card.dataset.selected);
+      card.querySelectorAll(".enade-option").forEach((btn,i)=>{
+        if(i===q.answer)btn.classList.add("correct");
+        else if(Number.isInteger(selected)&&i===selected)btn.classList.add("wrong");
+        btn.disabled=true;
+      });
+      card.querySelector(".enade-answer").classList.add("open");
+      card.querySelector("[data-enade-reveal]").disabled=true;
+      card.querySelector("[data-enade-reveal]").textContent="Gabarito revelado";
+    };
+    card.querySelector("[data-enade-regenerate]").onclick=()=>{
+      const filters={model:q.model,difficulty:q.difficulty,axis:q.axis};
+      const nq=generateEnadeQuestion(filters);
+      if(!nq)return toast("Não foi possível gerar outra questão com esses filtros.");
+      enadeCurrent[enadeCurrent.findIndex(x=>x.id===id)]=nq;
+      renderEnadeGenerated();
+      toast("Nova questão inédita gerada.");
+    };
+  });
+}
+function generateEnadeSet(){
+  const model=$("#enadeModel")?.value||"2025",difficulty=$("#enadeDifficulty")?.value||"mix",axis=$("#enadeAxis")?.value||"mix",count=Number($("#enadeCount")?.value||5);
+  enadeCurrent=[];
+  let guard=0;
+  while(enadeCurrent.length<count && guard<100){
+    guard++;
+    const q=generateEnadeQuestion({model,difficulty,axis});
+    if(q)enadeCurrent.push(q);
+  }
+  renderEnadeGenerated();
+  if(enadeCurrent.length)toast(`${enadeCurrent.length} questão(ões) inédita(s) gerada(s).`);
+  else toast("Nenhum modelo corresponde aos filtros escolhidos.");
+}
+
 const MODE_LABELS={
  free:"Livre",quick:"Revisão rápida",full:"Prova completa",errors:"Caderno de erros",
  favorites:"Favoritos",domain:"Modo domínio",challenge:"Desafio",unseen:"Inéditas"
@@ -9546,7 +10010,8 @@ function renderAll(){renderDashboard();renderDisciplines();renderStats();renderE
  await DB.init();state=normalizeState(await DB.get("state")||{});applyTheme(state.theme,false);
  renderDisciplines();initTopics();renderFormulas();initCalc();renderAll();
  $$(".nav button").forEach(b=>b.onclick=()=>navTo(b.dataset.view));$$("[data-go]").forEach(b=>b.onclick=()=>navTo(b.dataset.go));
- $("#startQuiz").onclick=()=>startSession();$("#continueBtn").onclick=resumeSession;$("#confirmAnswer").onclick=confirmAnswer;$("#nextQuestion").onclick=nextQuestion;
+ $("#startQuiz").onclick=()=>startSession();$("#continueBtn").onclick=resumeSession;
+ $("#generateEnade").onclick=generateEnadeSet;$("#clearEnade").onclick=()=>{enadeCurrent=[];renderEnadeGenerated()};$("#confirmAnswer").onclick=confirmAnswer;$("#nextQuestion").onclick=nextQuestion;
  $("#pauseQuiz").onclick=pauseSession;$("#finishQuiz").onclick=()=>finishSession();$("#favoriteQuestion").onclick=()=>session&&toggleQuestionFavorite(session.ids[session.index]);
  $("#saveQuestionNote").onclick=()=>{const qid=session?.ids[session.index];if(!qid)return;state.notes[qid]={text:$("#questionNote").value,ts:new Date().toISOString()};save();toast("Anotação salva.")};
  $("#startErrors").onclick=()=>{const ids=Object.keys(state.errors).filter(id=>!state.errors[id].redeemed);if(ids.length)startSession(ids,"errors")};
